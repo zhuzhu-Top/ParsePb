@@ -6,6 +6,7 @@
 直接拷贝如下两个文件到自己项目(本质上就一个函数)
 - ProtobufHelper.h
 - ProtobufHelper.cpp
+### test.cpp是写的测试 作为参考案例
 
 ## 参考项目
 - PyProto https://github.com/Ccccccccvvm/PyProto
