@@ -1,7 +1,7 @@
 ## ParsePb
 无proto文件解析protobuf序列化后的内容
 
-
+#### 欢迎提issue,给出一些解析不了我pb，我会尽力去修bug的
 ## 使用方法
 直接拷贝如下两个文件到自己项目(本质上就一个函数)
 - ProtobufHelper.h
