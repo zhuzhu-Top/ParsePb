@@ -36,6 +36,7 @@ FetchContent_Declare(nlohmann_json
 set(protobuf_BUILD_TESTS OFF)
 set(protobuf_WITH_ZLIB OFF)
 set(protobuf_USE_EXTERNAL_GTEST ON)
+set(ABSL_PROPAGATE_CXX_STD ON)
 FetchContent_MakeAvailable(nlohmann_json)
 
 

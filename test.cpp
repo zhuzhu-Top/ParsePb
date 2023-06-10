@@ -128,12 +128,12 @@ TEST(PROTOBUF_TEST_Bytes, Trivial)
     uint8_t pb_data[]={0x32,0x04,0xa,0x0a,0x03,0x04};
     JSON json;
     helper.parse_pb(pb_data,sizeof(pb_data),json);
-//    JSON ret= json::parse(R"(
-//{"2":22,"7":{"1":10,"2":"zhu中"}}
-//)");
+    JSON ret= JSON::parse(R"(
+{"6":"0a0a0304"}
+)");
     std::string str=json.dump();
     std::cout<<str<<std::endl;
-//    ASSERT_EQ(json,ret);
+    ASSERT_EQ(json,ret);
 }
 //int main(){
 //    SetConsoleOutputCP(65001);
