@@ -269,12 +269,8 @@ bool ProtobufHelper::parse_pb(std::uint8_t *pb_data, std::uint32_t pb_len,JSON& 
         }
     }
 }
-void ProtobufHelper::parse2json(JSON& json) {
-
-}
 ProtobufHelper::ProtobufHelper() {
-    JSON json;
-    parse2json(json);
+
 
 }
 

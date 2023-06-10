@@ -21,7 +21,7 @@ class ProtobufHelper {
 //
 public:
     ProtobufHelper();
-    void parse2json(JSON& json);
+
     bool parse_pb(std::uint8_t *pb_data, std::uint32_t pb_len,JSON& json,bool is_child= false,JSON* parent_node= nullptr);
 };
 
