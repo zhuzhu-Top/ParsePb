@@ -81,12 +81,15 @@ bool is_utf8(const uint8_t* hex,uint32_t size) {
             }
         }
         while (tmp_index>0){
-            if(one_byte_flag && By_te<=0x1f){
+            // 0x9 \t
+            // 0xA \r
+            // 0xD \n
+            if(one_byte_flag && By_te !=0x9 && By_te !=0xA && By_te!=0xD && By_te<=0x1f){
                 return false;
             }
             if(tmp_index==1 && !one_byte_flag){
                 By_te=hex[index++];
-                if(By_te<=0x1f || (By_te & 0b10000000) != 0b10000000) return false;
+                if(By_te<=0x1f || (By_te & 0b10000000) != 0b10000000) return false;//变长的最后一个字节的最高位为10
             }else if(!one_byte_flag){
                 By_te=hex[index++];
                 if ( !(By_te & 0b10000000)){
@@ -135,14 +138,23 @@ void setJsonData(std::string& parent_index_str,JSON* childJson, JSON& json,bool 
             }
         }else{     //子节点 非json值  //不是json值的话 就是普通的值 uint64_t uint32_t
             if (parent_node->find(parent_index_str)!=parent_node->end()){
-                (*parent_node)[parent_index_str].push_back(std::move(no_json_value));
+
+                if (parent_node->find(parent_index_str)->is_array()){ //不是arry 就重新设置为arry
+                    (*parent_node)[parent_index_str].push_back(std::move(no_json_value));
+                }else{ //不是arry 就重新设置为arry
+                    JSON newArray;
+                    newArray.push_back(std::move((*parent_node)[parent_index_str]));
+                    newArray.push_back(std::move(no_json_value));
+                    (*parent_node)[parent_index_str] = std::move(newArray);
+                }
+
             }else{
                 (*parent_node)[parent_index_str]=std::move(no_json_value);
             }
         }
     }else{ //非子节点 直接操作顶级json
 
-        if(is_json && childJson!= nullptr) { //json返回值
+        if(is_json && childJson!= nullptr) { //子节点 而且设置的值为json
             if(json.find(parent_index_str)!=json.end()){
                 if (json[parent_index_str].is_array()) { //如果是arry的话直接往里存
                     json[parent_index_str].push_back(*childJson);
@@ -158,7 +170,15 @@ void setJsonData(std::string& parent_index_str,JSON* childJson, JSON& json,bool 
 
         }else{ //非json返回值
             if(json.find(parent_index_str)!=json.end()){
-                json[parent_index_str].push_back(std::move(no_json_value));
+                if (json.find(parent_index_str)->is_array()){ //arry的话直接push
+                    json[parent_index_str].push_back(std::move(no_json_value));
+                }else{  //不是arry就要设置为arry
+                    JSON newArray;
+                    newArray.push_back(std::move(json[parent_index_str]));
+                    newArray.push_back(std::move(no_json_value));
+                    json[parent_index_str] = std::move(newArray);
+                }
+
             }else{
                 json[parent_index_str]=std::move(no_json_value);
             }
