@@ -183,6 +183,124 @@ TEST(PROTOBUF_DummyMessage, Trivial)
     std::cout<<str<<std::endl;
     ASSERT_EQ(json,ret);
 }
+
+TEST(PROTOBUF_Json2Pb_String, Trivial)
+{
+
+    JSON input_json= JSON::parse(R"(
+{"1":"zhuzhu中123"}
+)");
+    std::vector<std::uint8_t> expect_value={0x0a,0x0c,0x7a,0x68,0x75,0x7a,0x68,0x75,0xe4,0xb8,0xad,0x31,0x32,0x33};
+    //0a 0c 7a 68 75 7a 68 75 e4 b8 ad 31 32 33
+    std::uint32_t input_json_size=input_json.dump().size();
+    ProtobufHelper helper;
+    std::vector<std::uint8_t> pb_data;
+    pb_data.resize(input_json_size);
+    auto pb_len= helper.json2pb(input_json,pb_data.data(),input_json_size);
+    pb_data.resize(pb_len);
+    std::string str=input_json.dump();
+    std::cout<<str<<std::endl;
+    ASSERT_EQ(pb_data,expect_value);
+}
+TEST(PROTOBUF_Json2Pb_RepeatString_Fix32, Trivial)
+{
+/*
+[1](b):zhuzhu中123
+[1(1)](b):222
+{
+ "1" : ["zhuzhu中123","123"]
+}
+0a 0c
+   7a 68 75 7a 68 75 e4 b8 ad 31 32 33  //zhuzhu中123
+0a 03
+   32 32 32                             //123
+{
+ "2" : [1,2,3]                          //fix32
+}
+12 0c
+   01 00 00 00 02 00 00 00 03 00 00 00
+ * */
+//string测试数据
+//    JSON input_json= JSON::parse(R"(
+//{"1":["zhuzhu中123","222"]}
+//)");
+//fix32测试数据
+//    JSON input_json= JSON::parse(R"(
+//{"2":["fix32_num",1,2,3]}
+//)");
+//合并后测试数据
+    JSON input_json= JSON::parse(R"(
+{   "1":["zhuzhu中123","222"],
+    "2":["fix32_num",1,2,3]
+}
+)");
+    std::string str=input_json.dump();
+    std::vector<std::uint8_t> expect_value={0x0a,0x0c,0x7a,0x68,0x75,0x7a,0x68,0x75,0xe4,0xb8,0xad,0x31,0x32,0x33,0x0a,0x03,0x32,0x32,0x32,0x12,0x0c,0x01,0x00,0x00,0x00,0x02,0x00,0x00,0x00,0x03,0x00,0x00,0x00};
+    //0a 0c 7a 68 75 7a 68 75 e4 b8 ad 31 32 33
+    std::uint32_t input_json_size=input_json.dump().size();
+    ProtobufHelper helper;
+    std::vector<std::uint8_t> pb_data;
+    pb_data.resize(input_json_size);
+    auto pb_len= helper.json2pb(input_json,pb_data.data(),input_json_size);
+    pb_data.resize(pb_len);
+
+    std::cout<<str<<std::endl;
+    ASSERT_EQ(pb_data,expect_value);
+}
+
+TEST(PROTOBUF_Json2Pb_Object, Trivial)
+{
+    JSON input_json= JSON::parse(R"(
+{
+    "3":
+        {
+        "1": {"fix32_num" : 11},
+        "2": 22
+        }
+}
+)");
+    std::string str=input_json.dump();
+    std::vector<std::uint8_t> expect_value={0x1a,0x07,0x0d,0x0b,0x00,0x00,0x00,0x10,0x16};
+    //0a 0c 7a 68 75 7a 68 75 e4 b8 ad 31 32 33
+    std::uint32_t input_json_size=input_json.dump().size();
+    ProtobufHelper helper;
+    std::vector<std::uint8_t> pb_data;
+    pb_data.resize(input_json_size);
+    auto pb_len= helper.json2pb(input_json,pb_data.data(),input_json_size);
+    pb_data.resize(pb_len);
+
+    std::cout<<str<<std::endl;
+    ASSERT_EQ(pb_data,expect_value);
+}
+
+
+TEST(PROTOBUF_Json2Pb_WX_NewMsg, Trivial)
+{
+    JSON input_json= JSON::parse(R"(
+{
+    "1":1,
+    "2":{
+        "1" : {"1":"wxid_4zr6xxx6fi122"},
+        "2" : "123123111",
+        "3" : 1,
+        "4" : 1686669176,
+        "5" : 1686669176
+        }
+}
+)");
+    std::string str=input_json.dump();
+    std::vector<std::uint8_t> expect_value={0x08,0x01,0x12,0x2f,0x0a,0x14,0x0a,0x12,0x77,0x78,0x69,0x64,0x5f,0x34,0x7a,0x72,0x36,0x78,0x78,0x78,0x36,0x66,0x69,0x31,0x32,0x32,0x12,0x09,0x31,0x32,0x33,0x31,0x32,0x33,0x31,0x31,0x31,0x18,0x01,0x20,0xf8,0x8e,0xa2,0xa4,0x06,0x28,0xf8,0x8e,0xa2,0xa4,0x06};
+    //0a 0c 7a 68 75 7a 68 75 e4 b8 ad 31 32 33
+    std::uint32_t input_json_size=input_json.dump().size();
+    ProtobufHelper helper;
+    std::vector<std::uint8_t> pb_data;
+    pb_data.resize(input_json_size);
+    auto pb_len= helper.json2pb(input_json,pb_data.data(),input_json_size);
+    pb_data.resize(pb_len);
+
+    std::cout<<str<<std::endl;
+    ASSERT_EQ(pb_data,expect_value);
+}
 //int main(){
 //    SetConsoleOutputCP(65001);
 //

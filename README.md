@@ -14,3 +14,4 @@
 ## 参考文章
 - UTF-8编码的原理 https://blog.csdn.net/whahu1989/article/details/118314154
 - 官网对protobuf编码解释 https://protobuf.dev/programming-guides/encoding/
+- Protobuf编码解析 https://blog.csdn.net/u013688006/article/details/114009522
