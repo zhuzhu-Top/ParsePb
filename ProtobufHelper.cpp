@@ -418,7 +418,7 @@ std::uint32_t ProtobufHelper::json2pb(JSON& input_json,std::uint8_t* pb_data,std
                         }
                         output.WriteTag(tag);
                         auto real_value=value.get<std::uint64_t>();
-                        output.WriteVarint32(real_value);
+                        output.WriteVarint64(real_value);
                         break;
                     }
                     case fix_num::fix32_num:{
