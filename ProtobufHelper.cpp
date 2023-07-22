@@ -85,7 +85,7 @@ bool is_utf8(const uint8_t* hex,uint32_t size) {
             // 0x9 \t
             // 0xA \r
             // 0xD \n
-            if(one_byte_flag && By_te !=0x9 && By_te !=0xA && By_te!=0xD && By_te<=0x1f){
+            if(one_byte_flag && By_te !=0x9 && By_te !=0xA && By_te!=0xD && By_te<=0x1f && By_te!='\0'){
                 return false;
             }
             if(tmp_index==1 && !one_byte_flag){
